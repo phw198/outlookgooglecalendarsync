@@ -504,15 +504,23 @@ namespace OutlookGoogleCalendarSync.Outlook {
             SettingsStore.Calendar profile = Sync.Engine.Calendar.Instance.Profile;
 
             if (!(Sync.Engine.Instance.ManualForceCompare || forceCompare)) { //Needed if the exception has just been created, but now needs updating
-                if (profile.SyncDirection.Id != Sync.Direction.Bidirectional.Id) {
-                    if (ai.LastModificationTime > ev.UpdatedDateTimeOffset)
-                        return false;
-                } else {
-                    if (Ogcs.Google.CustomProperty.GetOGCSlastModified(ev).AddSeconds(5) >= ev.UpdatedDateTimeOffset)
-                        //Google last modified by OGCS
-                        return false;
-                    if (ai.LastModificationTime > ev.UpdatedDateTimeOffset)
-                        return false;
+                try {
+                    if (profile.SyncDirection.Id != Sync.Direction.Bidirectional.Id) {
+                        if (ai.LastModificationTime > ev.UpdatedDateTimeOffset)
+                            return false;
+                    } else {
+                        if (Ogcs.Google.CustomProperty.GetOGCSlastModified(ev).AddSeconds(5) >= ev.UpdatedDateTimeOffset)
+                            //Google last modified by OGCS
+                            return false;
+                        if (ai.LastModificationTime > ev.UpdatedDateTimeOffset)
+                            return false;
+                    }
+                } catch (System.Exception ex) {
+                    log.Debug("ai.LastModifiedDateTime: " + ai.LastModificationTime.ToString());
+                    log.Debug("ev.UpdatedRaw: " + ev.UpdatedRaw);
+                    log.Debug("ev.UpdatedDateTimeOffset: " + (ev.UpdatedDateTimeOffset?.ToString() ?? "null"));
+                    log.Debug("ev.Updated: " + (ev.Updated?.ToString() ?? "null"));
+                    throw;
                 }
             }
 
