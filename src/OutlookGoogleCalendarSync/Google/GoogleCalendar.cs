@@ -856,7 +856,9 @@ namespace OutlookGoogleCalendarSync.Google {
                         }
                     } catch (System.Exception ex) {
                         log.Debug("ai.LastModifiedDateTime: " + ai.LastModificationTime.ToString());
+                        log.Debug("ev.UpdatedRaw: " + ev.UpdatedRaw);
                         log.Debug("ev.UpdatedDateTimeOffset: " + (ev.UpdatedDateTimeOffset?.ToString() ?? "null"));
+                        log.Debug("ev.Updated: " + (ev.Updated?.ToString() ?? "null"));
                         throw;
                     }
                 }
